@@ -1,3 +1,8 @@
+[![Discord](https://img.shields.io/badge/Join%20Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/k8jWAy3Zar)
+[![Ko-fi](https://img.shields.io/badge/Support%20Me-Ko--fi-FF5E5B?style=for-the-badge&logo=kofi&logoColor=white)](https://ko-fi.com/zigqora)
+[![YouTube](https://img.shields.io/badge/Subscribe-YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://youtube.com/@zigqora)
+[![Follow on X](https://img.shields.io/badge/Follow%20Me-X-000000?style=for-the-badge&logo=x&logoColor=white)](https://x.com/zigqora)
+
 # Ricoshot
 
 This is a Minecraft mod that adds cool trick shots and parrying. It is inspired by the game ULTRAKILL.
