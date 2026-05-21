@@ -17,7 +17,7 @@ public class Ricoshot implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		LOGGER.info("Initializing Ricoshot Mod!");
+		LOGGER.info("Initializing Ricoshot Mod under the MIT License!");
 		RicoshotConfig.load();
 
 		// Ultrakill Coin Toss mechanic: Right click with a Golden Nugget in off-hand tosses it ONLY if main-hand is holding a Bow!

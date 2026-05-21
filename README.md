@@ -20,4 +20,6 @@ This is a Minecraft mod that adds cool trick shots and parrying. It is inspired 
 
 ## License
 
-This mod uses the Ricoshot Fair-Play & Fan License. It is completely free for you to play with your friends. Server owners can host it but cannot charge real money for gameplay advantages (like selling the coin ability or making parrying pay-to-win). No real money gambling or paid loot boxes are allowed.
+This mod is open-source and released under the [MIT License](LICENSE). 
+
+For server operators hosting this mod, please ensure compliance with Mojang's [Commercial Usage Guidelines](https://www.minecraft.net/en-us/usage-guidelines) and the Minecraft End User License Agreement (EULA).

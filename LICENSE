@@ -1,61 +1,21 @@
-THE RICOSHOT FAIR-PLAY & FAN LICENSE (RFPL) 1.0
-==============================================
+MIT License
 
-Copyright (c) 2026 Zigqora / Ricoshot Mod Contributors.
+Copyright (c) 2026 Zigqora
 
-This license governs the use, modification, distribution, and commercialization of the "Ricoshot" Minecraft mod (the "Software"). 
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-By using, compiling, running, hosting, or distributing this Software, you agree to be bound by the terms and conditions of this License.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-
-1. PREAMBLE & INSPIRATIONAL STATEMENT
--------------------------------------
-The Software is a fan-made, community-driven tribute inspired by the coin-tossing and hitscan parrying mechanics of the video game "ULTRAKILL" (developed by Arsi "Hakita" Patala and published by New Blood Interactive). The Software operates as an extension of "Minecraft" (developed by Mojang Studios). This License is designed to preserve the free, community-first nature of this Software, prevent predatory commercialization (such as pay-to-win or gambling), and provide a safe legal harbor for server owners to monetize ethically.
-
-
-2. GRANT OF RIGHTS FOR INDIVIDUALS & PRIVATE USE
-------------------------------------------------
-Permission is hereby granted, free of charge, to any individual (a "Normal Player") to:
-- Download, run, and play the Software.
-- Share the Software with friends, family, and peers.
-- Host private, non-commercial servers for personal, friend-group, or family use.
-- Copy, modify, merge, publish, and adapt the source code for personal learning, private play, or non-commercial community derivatives, subject to Section 5.
-
-
-3. ABSOLUTE PROHIBITION OF ADVANTAGE MONETIZATION & GAMBLING
-------------------------------------------------------------
-Any commercial utilization of the Software's core gameplay mechanics that provides an in-game advantage is strictly prohibited. Specifically, you may NOT:
-- Sell or lock the core gameplay mechanics of the Software (including but not limited to: the coin toss ability, parry functionality, custom weapon modifiers, or coin cooldown reductions) behind a paywall, subscription, or real-money purchase.
-- Include any gameplay-affecting items or mechanics of the Software in luck-based, probability-based, or gambling mechanisms (including but not limited to: paid loot boxes, mystery crates, key-and-chest purchases, or real-money slot systems).
-- Sell in-game currency or stats related to the Software that give a gameplay advantage to players over others.
-
-
-4. AUTHORIZED SERVER MONETIZATION 
-----------------------------------------------------------
-Public multiplayer servers hosting this Software are permitted to generate revenue to support hosting costs, provided they adhere strictly to the following monetization guidelines (the "Safe Harbor" Plan):
-
-A. ALLOWED COSMETIC MONETIZATION:
-   Servers may sell or reward players with purely cosmetic perks that do not affect the physical balance or competitiveness of the Software's gameplay. These allowed cosmetic options include:
-   - **Visual Particle Trails**: Custom particle effects attached to tossed coins (e.g., rainbows, fire spirals, ender drips).
-   - **Aesthetic Skins/Textures**: Alternative visual textures or models for the Golden Nugget / Coin (e.g., custom gold coins, ancient runes) delivered via server resource packs.
-   - **Cosmetic Sound Effects**: Custom client-side audio triggers when a player successfully tosses or parries (e.g., custom chimes, special dings, retro sound effects) that do not alter hitboxes or timing.
-   - **Social Status & Indicators**: Custom chat prefixes, name tags, scoreboard cosmetics, or cosmetic lobby emotes.
-
-B. ALLOWED DONATIONS:
-   - Servers may accept voluntary donations or crowdfunding support, provided that any rewards given to donors remain purely cosmetic or are applied globally to the entire server simultaneously (e.g., "Double Coin XP Weekend" for all players, paid for by a community goal).
-
-C. COMPLIANCE WITH PARENT PLATFORMS:
-   - Any server monetization must fully comply with Mojang's Minecraft Commercial Usage Guidelines and End User License Agreement (EULA).
-
-
-5. TRADEMARK & INTELLECTUAL PROPERTY COMPLIANCE
------------------------------------------------
-This Software is a completely unofficial fan creation. 
-- You may not use the registered trademarks "ULTRAKILL", "New Blood Interactive", "Minecraft", or "Mojang" in a way that implies official endorsement, sponsorship, or association.
-- You must not sell official copies of the game ULTRAKILL or Minecraft assets.
-- If you distribute or host this Software, you must include a prominent disclaimer in your server description, README, or mod listing stating that the Software is a fan project and is unaffiliated with Hakita, New Blood Interactive, or Mojang Studios.
-
-
-6. DISCLAIMER OF WARRANTY & LIMITATION OF LIABILITY
----------------------------------------------------
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

@@ -11,7 +11,7 @@
 		"homepage": "https://github.com/zigqora/ricoshot",
 		"sources": "https://github.com/zigqora/ricoshot"
 	},
-	"license": "RFPL-1.0",
+	"license": "MIT",
 	"icon": "assets/ricoshot/icon.png",
 	"environment": "*",
 	"entrypoints": {
