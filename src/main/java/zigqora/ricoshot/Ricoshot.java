@@ -8,12 +8,18 @@ public class Ricoshot implements ModInitializer {
 	public static final String MOD_ID = "ricoshot";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-	// Entity registration
+	// Entity registration — 1.21.2+: vanilla EntityType.Builder
+	private static final net.minecraft.registry.RegistryKey<net.minecraft.entity.EntityType<?>> FLYING_NUGGET_KEY =
+			net.minecraft.registry.RegistryKey.of(net.minecraft.registry.RegistryKeys.ENTITY_TYPE, net.minecraft.util.Identifier.of(MOD_ID, "flying_nugget"));
+
 	public static final net.minecraft.entity.EntityType<FlyingNuggetEntity> FLYING_NUGGET_ENTITY_TYPE = net.minecraft.registry.Registry.register(
-			net.minecraft.registry.Registries.ENTITY_TYPE, net.minecraft.util.Identifier.of(MOD_ID, "flying_nugget"),
-			net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder.<FlyingNuggetEntity>create(net.minecraft.entity.SpawnGroup.MISC, FlyingNuggetEntity::new)
-					.dimensions(net.minecraft.entity.EntityDimensions.fixed(0.25f, 0.25f))
-					.trackRangeChunks(4).trackedUpdateRate(10).build());
+			net.minecraft.registry.Registries.ENTITY_TYPE,
+			FLYING_NUGGET_KEY,
+			net.minecraft.entity.EntityType.Builder.<FlyingNuggetEntity>create(FlyingNuggetEntity::new, net.minecraft.entity.SpawnGroup.MISC)
+					.dimensions(0.25f, 0.25f)
+					.maxTrackingRange(4)
+					.trackingTickInterval(10)
+					.build(FLYING_NUGGET_KEY));
 
 	@Override
 	public void onInitialize() {
@@ -25,17 +31,17 @@ public class Ricoshot implements ModInitializer {
 			net.minecraft.item.ItemStack offHandStack = player.getStackInHand(net.minecraft.util.Hand.OFF_HAND);
 			net.minecraft.item.ItemStack mainHandStack = player.getStackInHand(net.minecraft.util.Hand.MAIN_HAND);
 			if (offHandStack.isOf(net.minecraft.item.Items.GOLD_NUGGET) && mainHandStack.isOf(net.minecraft.item.Items.BOW)) {
-				if (!player.getItemCooldownManager().isCoolingDown(net.minecraft.item.Items.GOLD_NUGGET)) {
+				if (!player.getItemCooldownManager().isCoolingDown(offHandStack)) {
 					if (!world.isClient()) {
 						tossNugget(player, world);
 					}
 					// Return success if using the off-hand directly, otherwise pass to allow main-hand actions (like Bow use)
 					return hand == net.minecraft.util.Hand.OFF_HAND ? 
-							net.minecraft.util.TypedActionResult.success(player.getStackInHand(hand)) : 
-							net.minecraft.util.TypedActionResult.pass(player.getStackInHand(hand));
+							net.minecraft.util.ActionResult.SUCCESS : 
+							net.minecraft.util.ActionResult.PASS;
 				}
 			}
-			return net.minecraft.util.TypedActionResult.pass(player.getStackInHand(hand));
+			return net.minecraft.util.ActionResult.PASS;
 		});
 	}
 
@@ -69,7 +75,7 @@ public class Ricoshot implements ModInitializer {
 		);
 
 		// Cooldown of 20 ticks (1 second) to prevent spamming
-		player.getItemCooldownManager().set(net.minecraft.item.Items.GOLD_NUGGET, 20);
+		player.getItemCooldownManager().set(new net.minecraft.item.ItemStack(net.minecraft.item.Items.GOLD_NUGGET), 20);
 
 		// Consume one Golden Nugget from the off-hand stack in survival mode
 		if (!player.getAbilities().creativeMode) {

@@ -105,7 +105,7 @@ public class ProjectileEntityMixin {
                                     }
                                  }
                                  if (customDamage > 0.0) {
-                                     victim.damage(victim.getDamageSources().arrow(arrow, arrow.getOwner()), (float) customDamage);
+                                     victim.damage((ServerWorld) world, victim.getDamageSources().arrow(arrow, arrow.getOwner()), (float) customDamage);
                                  }
 
                                 // Trigger explosive effect (1x TNT equivalent) for surrounding collateral damage ONLY ON TARGET HIT!

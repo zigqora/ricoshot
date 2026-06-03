@@ -27,7 +27,7 @@ public class FlyingNuggetEntity extends ThrownItemEntity {
     }
 
     public FlyingNuggetEntity(World world, LivingEntity owner) {
-        super(Ricoshot.FLYING_NUGGET_ENTITY_TYPE, owner, world);
+        super(Ricoshot.FLYING_NUGGET_ENTITY_TYPE, owner, world, new net.minecraft.item.ItemStack(net.minecraft.item.Items.GOLD_NUGGET));
     }
 
     @Override
@@ -306,7 +306,7 @@ public class FlyingNuggetEntity extends ThrownItemEntity {
 
                     if (!parried) {
                         // Apply instant hitscan damage
-                        representative.damage(representative.getDamageSources().arrow(null, arrow.getOwner()), (float) damageAmount);
+                        representative.damage((ServerWorld) world, representative.getDamageSources().arrow(null, arrow.getOwner()), (float) damageAmount);
 
                         // Instantly trigger block-safe explosion centered on target
                         world.createExplosion(
