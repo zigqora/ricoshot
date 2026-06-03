@@ -4,7 +4,9 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
+import net.minecraft.item.Item;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -41,8 +43,11 @@ public class ProjectileEntityMixin {
                                     // 1. Damage shield durability by 10 points
                                     net.minecraft.item.ItemStack activeItem = victimPlayer.getActiveItem();
                                     if (!activeItem.isEmpty()) {
-                                        EquipmentSlot activeHandSlot = victimPlayer.getActiveHand() == Hand.OFF_HAND ? EquipmentSlot.OFFHAND : EquipmentSlot.MAINHAND;
-                                        activeItem.damage(10, victimPlayer, activeHandSlot);
+                                    EquipmentSlot activeHandSlot = victimPlayer.getActiveHand() == Hand.OFF_HAND ? EquipmentSlot.OFFHAND : EquipmentSlot.MAINHAND;
+                                    // 1.21.2+: damage() requires ServerWorld + ServerPlayerEntity context
+                                    if (world instanceof ServerWorld serverWorldDmg && victimPlayer instanceof ServerPlayerEntity serverPlayerVictim) {
+                                        activeItem.damage(10, serverWorldDmg, serverPlayerVictim, (Item item) -> {});
+                                    }
                                     }
 
                                     // 2. Plays custom audio: shield block + anvil chime

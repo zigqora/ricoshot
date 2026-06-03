@@ -8,6 +8,7 @@ import net.minecraft.entity.projectile.thrown.ThrownItemEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -253,7 +254,10 @@ public class FlyingNuggetEntity extends ThrownItemEntity {
                             net.minecraft.item.ItemStack activeItem = victimPlayer.getActiveItem();
                             if (!activeItem.isEmpty()) {
                                 net.minecraft.entity.EquipmentSlot activeHandSlot = victimPlayer.getActiveHand() == net.minecraft.util.Hand.OFF_HAND ? net.minecraft.entity.EquipmentSlot.OFFHAND : net.minecraft.entity.EquipmentSlot.MAINHAND;
-                                activeItem.damage(10, victimPlayer, activeHandSlot);
+                                // 1.21.2+: damage() requires ServerWorld + ServerPlayerEntity context
+                                if (world instanceof ServerWorld serverWorld2 && victimPlayer instanceof ServerPlayerEntity serverPlayerVictim) {
+                                    activeItem.damage(10, serverWorld2, serverPlayerVictim, (Item item) -> {});
+                                }
                             }
 
                             // 2. Plays custom audio: shield block + anvil chime
