@@ -4,7 +4,9 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
+import net.minecraft.item.Item;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -41,8 +43,15 @@ public class ProjectileEntityMixin {
                                     // 1. Damage shield durability by 10 points
                                     net.minecraft.item.ItemStack activeItem = victimPlayer.getActiveItem();
                                     if (!activeItem.isEmpty()) {
-                                        EquipmentSlot activeHandSlot = victimPlayer.getActiveHand() == Hand.OFF_HAND ? EquipmentSlot.OFFHAND : EquipmentSlot.MAINHAND;
-                                        activeItem.damage(10, victimPlayer, activeHandSlot);
+                                    EquipmentSlot activeHandSlot = victimPlayer.getActiveHand() == Hand.OFF_HAND ? EquipmentSlot.OFFHAND : EquipmentSlot.MAINHAND;
+                                    // 1.21.2+: damage() requires ServerWorld + ServerPlayerEntity context
+                                    if (world instanceof ServerWorld serverWorldDmg && victimPlayer instanceof ServerPlayerEntity serverPlayerVictim) {
+                                        //? if v1214plus {
+                                        /*activeItem.damage(10, serverWorldDmg, serverPlayerVictim, (Item item) -> {});
+                                        *///?} else {
+                                        activeItem.damage(10, serverPlayerVictim, activeHandSlot);
+                                        //?}
+                                    }
                                     }
 
                                     // 2. Plays custom audio: shield block + anvil chime
@@ -100,7 +109,11 @@ public class ProjectileEntityMixin {
                                     }
                                  }
                                  if (customDamage > 0.0) {
+                                     //? if v1214plus {
+                                     /*victim.damage((ServerWorld) world, victim.getDamageSources().arrow(arrow, arrow.getOwner()), (float) customDamage);
+                                     *///?} else {
                                      victim.damage(victim.getDamageSources().arrow(arrow, arrow.getOwner()), (float) customDamage);
+                                     //?}
                                  }
 
                                 // Trigger explosive effect (1x TNT equivalent) for surrounding collateral damage ONLY ON TARGET HIT!

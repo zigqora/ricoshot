@@ -8,6 +8,7 @@ import net.minecraft.entity.projectile.thrown.ThrownItemEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -26,7 +27,11 @@ public class FlyingNuggetEntity extends ThrownItemEntity {
     }
 
     public FlyingNuggetEntity(World world, LivingEntity owner) {
+        //? if v1214plus {
+        /*super(Ricoshot.FLYING_NUGGET_ENTITY_TYPE, owner, world, new net.minecraft.item.ItemStack(net.minecraft.item.Items.GOLD_NUGGET));
+        *///?} else {
         super(Ricoshot.FLYING_NUGGET_ENTITY_TYPE, owner, world);
+        //?}
     }
 
     @Override
@@ -38,37 +43,40 @@ public class FlyingNuggetEntity extends ThrownItemEntity {
     public void tick() {
         super.tick();
 
+        // Cache world to avoid repeated getWorld() calls (return type changed in 1.21.5+)
+        World world = (World) this.getWorld();
+
         // Spawn nice sparkling gold particles on client side!
-        if (this.getWorld().isClient()) {
-            this.getWorld().addParticle(
+        if (world.isClient()) {
+            world.addParticle(
                     ParticleTypes.GLOW,
-                    this.getX(), this.getY() + 0.1, this.getZ(),
-                    0, 0, 0
+                    this.getX(), this.getY(), this.getZ(),
+                    0.0, 0.0, 0.0
             );
-            this.getWorld().addParticle(
+            world.addParticle(
                     ParticleTypes.CRIT,
                     this.getX(), this.getY() + 0.1, this.getZ(),
-                    0, 0, 0
+                    0.0, 0.0, 0.0
             );
         } else {
             // Apex Twinkle Indicator: at tick 14, right before reaching its peak, play a chime and flash!
             if (this.age == 14) {
-                this.getWorld().playSound(
-                        null,
-                        this.getX(), this.getY(), this.getZ(),
-                        SoundEvents.BLOCK_AMETHYST_BLOCK_CHIME,
-                        SoundCategory.PLAYERS,
-                        1.5F,
-                        2.0F // maximum high pitch chime!
-                );
-                if (this.getWorld() instanceof ServerWorld serverWorld) {
+                if (world instanceof ServerWorld serverWorld) {
+                    serverWorld.playSound(
+                            null,
+                            this.getX(), this.getY(), this.getZ(),
+                            SoundEvents.BLOCK_AMETHYST_BLOCK_CHIME,
+                            SoundCategory.PLAYERS,
+                            1.5F,
+                            2.0F
+                    );
                     serverWorld.spawnParticles(
                             ParticleTypes.FLASH,
                             this.getX(), this.getY(), this.getZ(),
                             1, 0.0, 0.0, 0.0, 0.0
                     );
                     serverWorld.spawnParticles(
-                            ParticleTypes.HAPPY_VILLAGER, // beautiful sparkling emerald/green particles!
+                            ParticleTypes.HAPPY_VILLAGER,
                             this.getX(), this.getY() + 0.1, this.getZ(),
                             10, 0.1, 0.1, 0.1, 0.1
                     );
@@ -76,8 +84,8 @@ public class FlyingNuggetEntity extends ThrownItemEntity {
             }
 
             // Find any projectile entity (arrow, spectral arrow, etc.) close to us
-            Box searchBox = this.getBoundingBox().expand(1.2); // Generous 1.2 block radius for hitbox!
-            List<PersistentProjectileEntity> arrows = this.getWorld().getEntitiesByClass(
+            Box searchBox = this.getBoundingBox().expand(1.2);
+            List<PersistentProjectileEntity> arrows = world.getEntitiesByClass(
                     PersistentProjectileEntity.class,
                     searchBox,
                     arrow -> arrow.isAlive() && (
@@ -99,7 +107,7 @@ public class FlyingNuggetEntity extends ThrownItemEntity {
     }
 
     private void triggerCoinHit(PersistentProjectileEntity arrow) {
-        World world = this.getWorld();
+        World world = (World) this.getWorld();
 
         // 1. Check current chain count and perfect timing status from the incoming arrow
         int chainCount = 0;
@@ -127,22 +135,24 @@ public class FlyingNuggetEntity extends ThrownItemEntity {
         // Play the ultrakill coin hit sound: a high pitch ding!
         // Pitch increases with the chain count to sound more and more chaotic and epic!
         float chimePitch = Math.min(2.0F, 1.4F + chainCount * 0.15F);
-        world.playSound(
-                null,
-                this.getX(), this.getY(), this.getZ(),
-                SoundEvents.BLOCK_BELL_USE,
-                SoundCategory.PLAYERS,
-                1.5F,
-                chimePitch
-        );
-        world.playSound(
-                null,
-                this.getX(), this.getY(), this.getZ(),
-                SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP,
-                SoundCategory.PLAYERS,
-                1.5F,
-                chimePitch - 0.2F
-        );
+        if (world instanceof ServerWorld serverWorldSound) {
+            serverWorldSound.playSound(
+                    null,
+                    this.getX(), this.getY(), this.getZ(),
+                    SoundEvents.BLOCK_BELL_USE,
+                    SoundCategory.PLAYERS,
+                    1.5F,
+                    chimePitch
+            );
+            serverWorldSound.playSound(
+                    null,
+                    this.getX(), this.getY(), this.getZ(),
+                    SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP,
+                    SoundCategory.PLAYERS,
+                    1.5F,
+                    chimePitch - 0.2F
+            );
+        }
 
         // Spawn an epic flash particle at the coin position!
         if (world instanceof ServerWorld serverWorld) {
@@ -253,26 +263,35 @@ public class FlyingNuggetEntity extends ThrownItemEntity {
                             net.minecraft.item.ItemStack activeItem = victimPlayer.getActiveItem();
                             if (!activeItem.isEmpty()) {
                                 net.minecraft.entity.EquipmentSlot activeHandSlot = victimPlayer.getActiveHand() == net.minecraft.util.Hand.OFF_HAND ? net.minecraft.entity.EquipmentSlot.OFFHAND : net.minecraft.entity.EquipmentSlot.MAINHAND;
-                                activeItem.damage(10, victimPlayer, activeHandSlot);
+                                // 1.21.2+: damage() requires ServerWorld + ServerPlayerEntity context
+                                if (world instanceof ServerWorld serverWorld2 && victimPlayer instanceof ServerPlayerEntity serverPlayerVictim) {
+                                    //? if v1214plus {
+                                    /*activeItem.damage(10, serverWorld2, serverPlayerVictim, (Item item) -> {});
+                                    *///?} else {
+                                    activeItem.damage(10, serverPlayerVictim, activeHandSlot);
+                                    //?}
+                                }
                             }
 
                             // 2. Plays custom audio: shield block + anvil chime
-                            world.playSound(
-                                    null,
-                                    victimPlayer.getX(), victimPlayer.getY(), victimPlayer.getZ(),
-                                    SoundEvents.ITEM_SHIELD_BLOCK,
-                                    SoundCategory.PLAYERS,
-                                    1.5F,
-                                    1.0F
-                            );
-                            world.playSound(
-                                    null,
-                                    victimPlayer.getX(), victimPlayer.getY(), victimPlayer.getZ(),
-                                    SoundEvents.BLOCK_ANVIL_LAND,
-                                    SoundCategory.PLAYERS,
-                                    1.0F,
-                                    1.8F
-                            );
+                            if (world instanceof ServerWorld serverWorldParry) {
+                                serverWorldParry.playSound(
+                                        null,
+                                        victimPlayer.getX(), victimPlayer.getY(), victimPlayer.getZ(),
+                                        SoundEvents.ITEM_SHIELD_BLOCK,
+                                        SoundCategory.PLAYERS,
+                                        1.5F,
+                                        1.0F
+                                );
+                                serverWorldParry.playSound(
+                                        null,
+                                        victimPlayer.getX(), victimPlayer.getY(), victimPlayer.getZ(),
+                                        SoundEvents.BLOCK_ANVIL_LAND,
+                                        SoundCategory.PLAYERS,
+                                        1.0F,
+                                        1.8F
+                                );
+                            }
 
                             // 3. Spawns rich sparks (ParticleTypes.CRIT and ParticleTypes.GLOW)
                             if (world instanceof ServerWorld serverWorld) {
@@ -302,7 +321,11 @@ public class FlyingNuggetEntity extends ThrownItemEntity {
 
                     if (!parried) {
                         // Apply instant hitscan damage
+                        //? if v1214plus {
+                        /*representative.damage((ServerWorld) world, representative.getDamageSources().arrow(null, arrow.getOwner()), (float) damageAmount);
+                        *///?} else {
                         representative.damage(representative.getDamageSources().arrow(null, arrow.getOwner()), (float) damageAmount);
+                        //?}
 
                         // Instantly trigger block-safe explosion centered on target
                         world.createExplosion(
@@ -316,16 +339,18 @@ public class FlyingNuggetEntity extends ThrownItemEntity {
                         );
 
                         // Play explosion sound at target location
-                        world.playSound(
-                                null,
-                                representative.getX(),
-                                representative.getY(),
-                                representative.getZ(),
-                                SoundEvents.ENTITY_GENERIC_EXPLODE,
-                                SoundCategory.PLAYERS,
-                                1.2F,
-                                1.0F
-                        );
+                        if (world instanceof ServerWorld serverWorldExplode) {
+                            serverWorldExplode.playSound(
+                                    null,
+                                    representative.getX(),
+                                    representative.getY(),
+                                    representative.getZ(),
+                                    SoundEvents.ENTITY_GENERIC_EXPLODE,
+                                    SoundCategory.PLAYERS,
+                                    1.2F,
+                                    1.0F
+                            );
+                        }
 
                         // Spawn visual splitting beam from coin to target
                         if (world instanceof ServerWorld serverWorld) {
@@ -376,14 +401,16 @@ public class FlyingNuggetEntity extends ThrownItemEntity {
                     }
 
                     // Play shoot/redirect sound for audio feedback
-                    world.playSound(
-                            null,
-                            this.getX(), this.getY(), this.getZ(),
-                            SoundEvents.ENTITY_ARROW_SHOOT,
-                            SoundCategory.PLAYERS,
-                            1.2F,
-                            1.4F
-                    );
+                    if (world instanceof ServerWorld serverWorldShoot) {
+                        serverWorldShoot.playSound(
+                                null,
+                                this.getX(), this.getY(), this.getZ(),
+                                SoundEvents.ENTITY_ARROW_SHOOT,
+                                SoundCategory.PLAYERS,
+                                1.2F,
+                                1.4F
+                        );
+                    }
                 }
             }
             // Discard the original arrow since it successfully split

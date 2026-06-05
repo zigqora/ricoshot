@@ -1,0 +1,23 @@
+allprojects {
+    tasks.register('dumpMethods') {
+        doLast {
+            def mcClasspath = project.configurations.compileClasspath.toList()
+            def cl = new java.net.URLClassLoader(mcClasspath.collect { it.toURI().toURL() } as java.net.URL[])
+            
+            def cooldownClass = Class.forName("net.minecraft.entity.player.ItemCooldownManager", false, cl)
+            cooldownClass.getMethods().each { m ->
+                println "COOLDOWN: " + m.getName() + "(" + m.getParameterTypes()*.getName().join(", ") + ")"
+            }
+
+            def entityClass = Class.forName("net.minecraft.entity.Entity", false, cl)
+            entityClass.getMethods().each { m ->
+                if (m.getName().toLowerCase().contains("pos")) {
+                    println "ENTITY_POS: " + m.getName() + "(" + m.getParameterTypes()*.getName().join(", ") + ")"
+                }
+                if (m.getName().toLowerCase().contains("world")) {
+                    println "ENTITY_WORLD: " + m.getName() + "(" + m.getParameterTypes()*.getName().join(", ") + ")"
+                }
+            }
+        }
+    }
+}

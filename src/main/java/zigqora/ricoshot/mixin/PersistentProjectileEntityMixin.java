@@ -21,17 +21,17 @@ public class PersistentProjectileEntityMixin {
                     world.addParticle(
                             net.minecraft.particle.ParticleTypes.CRIT,
                             arrow.getX(), arrow.getY(), arrow.getZ(),
-                            0, 0, 0
+                            0.0, 0.0, 0.0
                     );
                     world.addParticle(
                             net.minecraft.particle.ParticleTypes.GLOW,
                             arrow.getX(), arrow.getY(), arrow.getZ(),
-                            0, 0, 0
+                            0.0, 0.0, 0.0
                     );
                     world.addParticle(
                             net.minecraft.particle.ParticleTypes.END_ROD,
                             arrow.getX(), arrow.getY(), arrow.getZ(),
-                            0, 0, 0
+                            0.0, 0.0, 0.0
                     );
                 }
             }
