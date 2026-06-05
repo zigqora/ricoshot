@@ -14,11 +14,32 @@ public class PersistentProjectileEntityMixin {
     private void tickInject(CallbackInfo ci) {
         PersistentProjectileEntity arrow = (PersistentProjectileEntity) (Object) this;
         if (arrow.getCommandTags().contains("ultrakill_coin_boosted")) {
-            World world = arrow.getWorld();
+            //? if v12111plus {
+            World world = arrow.getEntityWorld();
+            //?} else {
+            /*World world = arrow.getWorld();
+            *///?}
             if (world.isClient()) {
                 // Beautiful dense golden, crit, and light trail particles representing the coin boost!
                 for (int i = 0; i < 3; i++) {
-                    world.addParticle(
+                    //? if v12111plus {
+                    world.addImportantParticleClient(
+                            net.minecraft.particle.ParticleTypes.CRIT,
+                            arrow.getX(), arrow.getY(), arrow.getZ(),
+                            0.0, 0.0, 0.0
+                    );
+                    world.addImportantParticleClient(
+                            net.minecraft.particle.ParticleTypes.GLOW,
+                            arrow.getX(), arrow.getY(), arrow.getZ(),
+                            0.0, 0.0, 0.0
+                    );
+                    world.addImportantParticleClient(
+                            net.minecraft.particle.ParticleTypes.END_ROD,
+                            arrow.getX(), arrow.getY(), arrow.getZ(),
+                            0.0, 0.0, 0.0
+                    );
+                    //?} else {
+                    /*world.addParticle(
                             net.minecraft.particle.ParticleTypes.CRIT,
                             arrow.getX(), arrow.getY(), arrow.getZ(),
                             0.0, 0.0, 0.0
@@ -33,6 +54,7 @@ public class PersistentProjectileEntityMixin {
                             arrow.getX(), arrow.getY(), arrow.getZ(),
                             0.0, 0.0, 0.0
                     );
+                    *///?}
                 }
             }
         }

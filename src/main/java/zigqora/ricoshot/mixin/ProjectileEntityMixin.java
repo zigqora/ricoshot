@@ -28,7 +28,11 @@ public class ProjectileEntityMixin {
     private void onCollisionInject(HitResult hitResult, CallbackInfo ci) {
         if ((Object) this instanceof PersistentProjectileEntity arrow) {
             if (arrow.getCommandTags().contains("ultrakill_coin_boosted")) {
-                World world = arrow.getWorld();
+                //? if v12111plus {
+                World world = arrow.getEntityWorld();
+                //?} else {
+                /*World world = arrow.getWorld();
+                *///?}
                 if (!world.isClient()) {
                     // Check if we hit a LivingEntity to apply the exact scaled damage
                     if (hitResult instanceof net.minecraft.util.hit.EntityHitResult entityHit) {
@@ -47,10 +51,10 @@ public class ProjectileEntityMixin {
                                     // 1.21.2+: damage() requires ServerWorld + ServerPlayerEntity context
                                     if (world instanceof ServerWorld serverWorldDmg && victimPlayer instanceof ServerPlayerEntity serverPlayerVictim) {
                                         //? if v1214plus {
-                                        /*activeItem.damage(10, serverWorldDmg, serverPlayerVictim, (Item item) -> {});
-                                        *///?} else {
-                                        activeItem.damage(10, serverPlayerVictim, activeHandSlot);
-                                        //?}
+                                        activeItem.damage(10, serverWorldDmg, serverPlayerVictim, (Item item) -> {});
+                                        //?} else {
+                                        /*activeItem.damage(10, serverPlayerVictim, activeHandSlot);
+                                        *///?}
                                     }
                                     }
 
@@ -110,10 +114,10 @@ public class ProjectileEntityMixin {
                                  }
                                  if (customDamage > 0.0) {
                                      //? if v1214plus {
-                                     /*victim.damage((ServerWorld) world, victim.getDamageSources().arrow(arrow, arrow.getOwner()), (float) customDamage);
-                                     *///?} else {
-                                     victim.damage(victim.getDamageSources().arrow(arrow, arrow.getOwner()), (float) customDamage);
-                                     //?}
+                                     victim.damage((ServerWorld) world, victim.getDamageSources().arrow(arrow, arrow.getOwner()), (float) customDamage);
+                                     //?} else {
+                                     /*victim.damage(victim.getDamageSources().arrow(arrow, arrow.getOwner()), (float) customDamage);
+                                     *///?}
                                  }
 
                                 // Trigger explosive effect (1x TNT equivalent) for surrounding collateral damage ONLY ON TARGET HIT!
