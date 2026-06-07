@@ -27,10 +27,10 @@ public class Ricoshot implements ModInitializer {
 					.maxTrackingRange(4)
 					.trackingTickInterval(10)
 					//? if >=1.21.4 {
-					.build(FLYING_NUGGET_KEY));
-					//?} else {
-					/*.build());
-					*///?}
+					/*.build(FLYING_NUGGET_KEY));
+					*///?} else {
+					.build());
+					//?}
 
 	@Override
 	public void onInitialize() {
@@ -43,30 +43,30 @@ public class Ricoshot implements ModInitializer {
 			net.minecraft.item.ItemStack mainHandStack = player.getStackInHand(net.minecraft.util.Hand.MAIN_HAND);
 			if (offHandStack.isOf(net.minecraft.item.Items.GOLD_NUGGET) && mainHandStack.isOf(net.minecraft.item.Items.BOW)) {
 				//? if >=1.21.4 {
-				if (!player.getItemCooldownManager().isCoolingDown(offHandStack)) {
-				//?} else {
-				/*if (!player.getItemCooldownManager().isCoolingDown(offHandStack.getItem())) {
-				*///?}
+				/*if (!player.getItemCooldownManager().isCoolingDown(offHandStack)) {
+				*///?} else {
+				if (!player.getItemCooldownManager().isCoolingDown(offHandStack.getItem())) {
+				//?}
 					if (!world.isClient()) {
 						tossNugget(player, world);
 					}
 					// Return success if using the off-hand directly, otherwise pass to allow main-hand actions (like Bow use)
 					//? if >=1.21.4 {
-					return hand == net.minecraft.util.Hand.OFF_HAND ? 
+					/*return hand == net.minecraft.util.Hand.OFF_HAND ? 
 							net.minecraft.util.ActionResult.SUCCESS : 
 							net.minecraft.util.ActionResult.PASS;
-					//?} else {
-					/*return hand == net.minecraft.util.Hand.OFF_HAND ? 
+					*///?} else {
+					return hand == net.minecraft.util.Hand.OFF_HAND ? 
 							net.minecraft.util.TypedActionResult.success(player.getStackInHand(hand)) : 
 							net.minecraft.util.TypedActionResult.pass(player.getStackInHand(hand));
-					*///?}
+					//?}
 				}
 			}
 			//? if >=1.21.4 {
-			return net.minecraft.util.ActionResult.PASS;
-			//?} else {
-			/*return net.minecraft.util.TypedActionResult.pass(player.getStackInHand(hand));
-			*///?}
+			/*return net.minecraft.util.ActionResult.PASS;
+			*///?} else {
+			return net.minecraft.util.TypedActionResult.pass(player.getStackInHand(hand));
+			//?}
 		});
 	}
 
@@ -103,10 +103,10 @@ public class Ricoshot implements ModInitializer {
 
 		// Cooldown of 20 ticks (1 second) to prevent spamming
 		//? if >=1.21.4 {
-		player.getItemCooldownManager().set(new net.minecraft.item.ItemStack(net.minecraft.item.Items.GOLD_NUGGET), 20);
-		//?} else {
-		/*player.getItemCooldownManager().set(net.minecraft.item.Items.GOLD_NUGGET, 20);
-		*///?}
+		/*player.getItemCooldownManager().set(new net.minecraft.item.ItemStack(net.minecraft.item.Items.GOLD_NUGGET), 20);
+		*///?} else {
+		player.getItemCooldownManager().set(net.minecraft.item.Items.GOLD_NUGGET, 20);
+		//?}
 
 		// Consume one Golden Nugget from the off-hand stack in survival mode
 		if (!player.getAbilities().creativeMode) {
