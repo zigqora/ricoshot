@@ -3,7 +3,6 @@
 	"package": "zigqora.ricoshot.mixin.client",
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
-		"GameMenuScreenMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

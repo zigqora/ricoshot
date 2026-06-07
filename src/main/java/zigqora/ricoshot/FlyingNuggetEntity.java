@@ -160,7 +160,7 @@ public class FlyingNuggetEntity extends ThrownItemEntity {
         }
 
         // 3. No more other nuggets: redirect the arrow to nearby mob / player targets in shooter's FOV!
-        double range = 40.0;
+        double range = zigqora.ricoshot.RicoshotConfig.instance.targetingRadius;
         List<LivingEntity> targets = world.getEntitiesByClass(
                 LivingEntity.class,
                 this.getBoundingBox().expand(range),
@@ -213,35 +213,16 @@ public class FlyingNuggetEntity extends ThrownItemEntity {
                 }
 
                 if (representative != null) {
-                    // Calculate distance to coin
-                    double distance = this.distanceTo(representative);
+                    // Calculate damage based on user's configuration
+                    // The user requested that we use the slider's configured heart damage directly.
+                    double damageToDeal = zigqora.ricoshot.RicoshotConfig.instance.baseDamage;
 
-                    // Calculate damage based on user's requirements scaled to 40 blocks:
-                    // Max 40 blocks = 80% healthbar gone (0.80)
-                    // Min 12 blocks (or closer) = 90% - 100% (95% = 0.95)
-                    double pct;
-                    if (distance <= 12.0) {
-                        pct = 0.95;
-                    } else if (distance >= 40.0) {
-                        pct = 0.80;
-                    } else {
-                        // Linear interpolation between 0.95 at 12 blocks and 0.80 at 40 blocks
-                        pct = 0.95 - (distance - 12.0) * (0.15 / 28.0);
-                    }
-
-                    // Add chain scaling: +5% max health damage per bounce in the chain!
-                    pct += (chainCount - 1) * 0.05;
-
-                    // Perfect timing timing guarantees at least 100% max health (guaranteed death!)
+                    // Perfect timing grants a 50% damage boost instead of a guaranteed instakill
                     if (isPerfectTiming) {
-                        pct = Math.max(pct, 1.0);
+                        damageToDeal *= 1.5;
                     }
 
-                    // Clamp to max 1.1 (110%) to prevent integer overflow or absurd numbers
-                    pct = Math.min(pct, 1.1);
-
-                    double targetMaxHealth = representative.getMaxHealth();
-                    double damageAmount = targetMaxHealth * pct;
+                    float damageAmount = (float) damageToDeal;
 
                     boolean parried = false;
                     if (representative instanceof PlayerEntity victimPlayer && victimPlayer.isBlocking()) {
@@ -306,30 +287,35 @@ public class FlyingNuggetEntity extends ThrownItemEntity {
 
                     if (!parried) {
                         // Apply instant hitscan damage
-                        representative.damage((ServerWorld) world, representative.getDamageSources().arrow(null, arrow.getOwner()), (float) damageAmount);
+                        if (world instanceof ServerWorld sw) {
+                            representative.damage(sw, representative.getDamageSources().arrow(null, arrow.getOwner()), (float) damageAmount);
+                        }
 
-                        // Instantly trigger block-safe explosion centered on target
-                        world.createExplosion(
-                                arrow.getOwner(),
-                                representative.getX(),
-                                representative.getY(),
-                                representative.getZ(),
-                                4.0F, // 1x TNT equivalent!
-                                false, // no fire
-                                World.ExplosionSourceType.NONE // don't destroy blocks
-                        );
+                        // Spawn a purely cosmetic explosion particle!
+                        // (We used to call world.createExplosion here, which dealt massive TNT damage and ruined the math!)
+                        if (world instanceof ServerWorld serverWorld) {
+                            serverWorld.spawnParticles(
+                                    ParticleTypes.EXPLOSION_EMITTER,
+                                    representative.getX(),
+                                    representative.getY() + 1.0,
+                                    representative.getZ(),
+                                    1, 0.0, 0.0, 0.0, 0.0
+                            );
+                        }
 
-                        // Play explosion sound at target location
-                        world.playSound(
-                                null,
-                                representative.getX(),
-                                representative.getY(),
-                                representative.getZ(),
-                                SoundEvents.ENTITY_GENERIC_EXPLODE,
-                                SoundCategory.PLAYERS,
-                                1.2F,
-                                1.0F
-                        );
+                        // Play explosion sound at target location if enabled in config
+                        if (RicoshotConfig.instance.playExplosionSound && world instanceof ServerWorld serverWorldExplode) {
+                            serverWorldExplode.playSound(
+                                    null,
+                                    representative.getX(),
+                                    representative.getY(),
+                                    representative.getZ(),
+                                    SoundEvents.ENTITY_GENERIC_EXPLODE,
+                                    SoundCategory.PLAYERS,
+                                    1.2F,
+                                    1.0F
+                            );
+                        }
 
                         // Spawn visual splitting beam from coin to target
                         if (world instanceof ServerWorld serverWorld) {
