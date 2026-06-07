@@ -20,6 +20,9 @@
 		],
 		"client": [
 			"zigqora.ricoshot.client.RicoshotClient"
+		],
+		"modmenu": [
+			"zigqora.ricoshot.gui.RicoshotModMenuApiImpl"
 		]
 	},
 	"mixins": [

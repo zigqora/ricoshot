@@ -9,6 +9,8 @@ base.archivesName = property("mod.id") as String
 
 repositories {
     // Loom adds the essential Minecraft/Fabric repos automatically.
+    maven("https://maven.terraformersmc.com/releases/")
+    maven("https://maven.shedaniel.me/")
 }
 
 dependencies {
@@ -16,6 +18,7 @@ dependencies {
     mappings("net.fabricmc:yarn:${property("deps.yarn_mappings")}:v2")
     modImplementation("net.fabricmc:fabric-loader:${property("deps.fabric_loader")}")
     modImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric_api")}")
+    modImplementation("com.terraformersmc:modmenu:${property("deps.modmenu")}")
 }
 
 loom {
