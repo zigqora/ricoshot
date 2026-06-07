@@ -1,66 +1,56 @@
 # Ricoshot Wiki & Guide
 
-Welcome to the **Ricoshot** wiki! This guide will teach you everything you need to know about coin tossing, perfect timing shots, and shield parrying.
+Welcome to the **Ricoshot** wiki! This guide will teach you everything you need to know about coin tossing, chain shots, perfect timing, and shield parrying.
 
 ---
 
 ## 1. How to Toss and Shoot Coins
 
-To do a Ricoshot, you need to toss a coin into the air and shoot it with your bow.
+To perform a Ricoshot, toss a coin into the air and shoot it with your bow before it lands!
 
 ### Setup:
 1. Place a **Bow** in your main hand.
-2. Place **Golden Nuggets** in your off-hand (your shield slot).
-3. Hold a **Carrot on a Stick** (in any slot) or click right-click to toss.
+2. Place **Golden Nuggets** in your off-hand (your shield slot)
 
 ### Controls:
-* **Toss Coin:** Right-click with your bow and nuggets equipped. This will consume 1 gold nugget and toss it forward. It will play a chime sound when thrown.
-* **Shoot Coin:** Draw your bow and shoot the coin while it is flying in the air!
+* **Toss Coin:** Right-click with your bow and nuggets equipped. This consumes 1 gold nugget and tosses it forward.
+* **Shoot Coin:** Draw your bow and shoot the coin while it is flying in the air. 
 
 ---
 
-## 2. Ricoshot vs. Perfect Timing (Ultraricoshot)
+## 2. Hitscan & Splitting Mechanics
 
-### The Normal Ricoshot
-If you shoot the coin at any normal time while it flies, the arrow bounces off it and hits the nearest mob automatically.
-* **Damage:** Deals **85% to 95%** of the mob's health based on how close they are.
-* **Text Feedback:** Displays `+ RICOSHOT` on your action bar.
+The Ricoshot doesn't just hit one target—it intelligently splits to hit groups of enemies simultaneously!
 
-### The Perfect Timing (Ultraricoshot)
-When the coin reaches the highest point of its throw, it will play a special chime sound and flash green stars in the air. 
-* **The Window:** If you shoot the coin exactly during this sparkle window, you trigger an **Ultraricoshot**.
-* **Damage:** Deals at least **100%** of the mob's max health (instant kill!).
-* **Targeting Rules:** The bounce is not fully automatic. For the beam to hit a target:
-  1. The target must be within **40 blocks** of the coin.
-  2. The target must have a **clear line-of-sight** to the coin (no solid blocks in the way).
-  3. The target must be within the shooter's **120-degree field of view** cone.
-* **Text Feedback:** Displays `+ ULTRARICOSHOT (PERFECT SPLIT!)` with a bright white flash!
+* **Targeting Rules:** The coin will automatically scan for valid targets that are:
+  1. Within the **Targeting Radius** (default: 10 blocks from the coin).
+  2. In your **Line of Sight** (no solid blocks blocking the view).
+  3. Inside your **Field of View** (roughly 120-degree cone in front of you).
 
 ---
 
-## 3. Shield Parrying
+## 4. Shield Parrying
 
-You can deflect the Ricoshot beam using a shield!
+You can deflect an incoming Ricoshot beam using a shield!
 
-* **How to Parry:** If another player is shooting a Ricoshot at you, hold your shield up and look towards the coin.
-* **The Result:** If you block the beam, it will play a shield block sound and a loud anvil chime. 
+* **How to Parry:** If another player shoots a Ricoshot at you, hold your shield up and look towards the coin.
+* **The Result:** If you block the beam, it will play a loud anvil chime and spawn heavy sparks.
 * **Durability:** Parrying successfully will block all damage completely, but it will take **10 points** of durability away from your shield.
-* **Text Feedback:** Displays `+ SHIELD PARRY!` on your screen.
+* **Text Feedback:** Displays `+ SHIELD PARRY!` on your screen, and notifies the attacker that their shot was blocked.
 
 ---
 
-## 4. How to Change Settings
+## 5. In-Game Configuration
 
-You can customize the texts and settings of the mod easily.
+Ricoshot comes with a fully native in-game configuration menu thanks to **Mod Menu** and **Cloth Config**!
 
-### The Config File:
-Inside your Minecraft folder, go to the `config` folder and open the `ricoshot.json` file with any text editor (like Notepad).
+### How to Edit Settings:
+1. From the Minecraft Main Menu or Pause Screen, click the **Mods** button.
+2. Find **Ricoshot** in the list and click the **Config** button (the sliders icon).
 
-You can change these lines to edit the messages that appear on your screen:
-* `"enableActionBarText"`: Set to `true` or `false` to turn the screen messages on or off.
-* `"ricoshotText"`: The text shown for a normal ricoshot.
-* `"ultraRicoshotPerfectText"`: The text shown for a perfect split.
-* `"shieldParryText"`: The text shown when parrying with a shield.
-
-### Pause Menu Button:
-If you are playing in the game, press **ESC** to open the pause menu. There is a gold coin button on the screen. Click it to quickly toggle the screen texts on or off!
+### Available Settings:
+* **Base Damage:** Adjust the raw damage dealt by a standard Ricoshot (slider from 1.0 to 40.0).
+* **Targeting Radius:** Adjust how far the coin scans for targets (slider from 5.0 to 50.0 blocks).
+* **Explosion Sounds:** Toggle whether successful hits play an explosion sound.
+* **Action Bar Texts:** Toggle the combo texts completely on or off.
+* **Custom Text Values:** You can fully customize what text appears for a Normal Ricoshot, an Ultraricoshot, a Miss, and a Shield Parry!
