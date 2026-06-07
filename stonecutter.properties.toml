@@ -30,3 +30,19 @@ mod.mc_releases = ["1.21.11"]
 deps.fabric_api = "0.141.4+1.21.11"
 deps.yarn_mappings = "1.21.11+build.6"
 deps.modmenu = "17.0.0"
+
+["1.20.1"]
+mod.mc_compat = ">=1.20.1 <1.20.2"
+mod.mc_releases = ["1.20.1"]
+
+deps.fabric_api = "0.92.9+1.20.1"
+deps.yarn_mappings = "1.20.1+build.10"
+deps.modmenu = "7.2.2"
+
+["1.20"]
+mod.mc_compat = ">=1.20 <1.20.1"
+mod.mc_releases = ["1.20"]
+
+deps.fabric_api = "0.83.0+1.20"
+deps.yarn_mappings = "1.20+build.1"
+deps.modmenu = "7.0.1"
