@@ -29,10 +29,10 @@ public class ProjectileEntityMixin {
         if ((Object) this instanceof PersistentProjectileEntity arrow) {
             if (arrow.getCommandTags().contains("ultrakill_coin_boosted")) {
                 //? if >=1.21.11 {
-                /*World world = arrow.getEntityWorld();
-                *///?} else {
-                World world = arrow.getWorld();
-                //?}
+                World world = arrow.getEntityWorld();
+                //?} else {
+                /*World world = arrow.getWorld();
+                *///?}
                 if (!world.isClient()) {
                     // Check if we hit a LivingEntity to apply the exact scaled damage
                     if (hitResult instanceof net.minecraft.util.hit.EntityHitResult entityHit) {
