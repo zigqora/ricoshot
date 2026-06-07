@@ -14,16 +14,16 @@ public class PersistentProjectileEntityMixin {
     private void tickInject(CallbackInfo ci) {
         PersistentProjectileEntity arrow = (PersistentProjectileEntity) (Object) this;
         if (arrow.getCommandTags().contains("ultrakill_coin_boosted")) {
-            //? if v12111plus {
-            World world = arrow.getEntityWorld();
-            //?} else {
-            /*World world = arrow.getWorld();
-            *///?}
+            //? if >=1.21.11 {
+            /*World world = arrow.getEntityWorld();
+            *///?} else {
+            World world = arrow.getWorld();
+            //?}
             if (world.isClient()) {
                 // Beautiful dense golden, crit, and light trail particles representing the coin boost!
                 for (int i = 0; i < 3; i++) {
-                    //? if v12111plus {
-                    world.addImportantParticleClient(
+                    //? if >=1.21.11 {
+                    /*world.addImportantParticleClient(
                             net.minecraft.particle.ParticleTypes.CRIT,
                             arrow.getX(), arrow.getY(), arrow.getZ(),
                             0.0, 0.0, 0.0
@@ -38,8 +38,8 @@ public class PersistentProjectileEntityMixin {
                             arrow.getX(), arrow.getY(), arrow.getZ(),
                             0.0, 0.0, 0.0
                     );
-                    //?} else {
-                    /*world.addParticle(
+                    *///?} else {
+                    world.addParticle(
                             net.minecraft.particle.ParticleTypes.CRIT,
                             arrow.getX(), arrow.getY(), arrow.getZ(),
                             0.0, 0.0, 0.0
@@ -54,7 +54,7 @@ public class PersistentProjectileEntityMixin {
                             arrow.getX(), arrow.getY(), arrow.getZ(),
                             0.0, 0.0, 0.0
                     );
-                    *///?}
+                    //?}
                 }
             }
         }

@@ -27,7 +27,7 @@ public class FlyingNuggetEntity extends ThrownItemEntity {
     }
 
     public FlyingNuggetEntity(World world, LivingEntity owner) {
-        //? if v1214plus {
+        //? if >=1.21.4 {
         super(Ricoshot.FLYING_NUGGET_ENTITY_TYPE, owner, world, new net.minecraft.item.ItemStack(net.minecraft.item.Items.GOLD_NUGGET));
         //?} else {
         /*super(Ricoshot.FLYING_NUGGET_ENTITY_TYPE, owner, world);
@@ -44,16 +44,16 @@ public class FlyingNuggetEntity extends ThrownItemEntity {
         super.tick();
 
         // Cache world to avoid repeated getWorld() calls (return type changed in 1.21.5+)
-        //? if v12111plus {
-        World world = (World) this.getEntityWorld();
-        //?} else {
-        /*World world = (World) this.getWorld();
-        *///?}
+        //? if >=1.21.11 {
+        /*World world = (World) this.getEntityWorld();
+        *///?} else {
+        World world = (World) this.getWorld();
+        //?}
 
         // Spawn nice sparkling gold particles on client side!
         if (world.isClient()) {
-            //? if v12111plus {
-            world.addImportantParticleClient(
+            //? if >=1.21.11 {
+            /*world.addImportantParticleClient(
                     ParticleTypes.GLOW,
                     this.getX(), this.getY(), this.getZ(),
                     0.0, 0.0, 0.0
@@ -63,8 +63,8 @@ public class FlyingNuggetEntity extends ThrownItemEntity {
                     this.getX(), this.getY() + 0.1, this.getZ(),
                     0.0, 0.0, 0.0
             );
-            //?} else {
-            /*world.addParticle(
+            *///?} else {
+            world.addParticle(
                     ParticleTypes.GLOW,
                     this.getX(), this.getY(), this.getZ(),
                     0.0, 0.0, 0.0
@@ -74,7 +74,7 @@ public class FlyingNuggetEntity extends ThrownItemEntity {
                     this.getX(), this.getY() + 0.1, this.getZ(),
                     0.0, 0.0, 0.0
             );
-            *///?}
+            //?}
         } else {
             // Apex Twinkle Indicator: at tick 14, right before reaching its peak, play a chime and flash!
             if (this.age == 14) {
@@ -87,19 +87,19 @@ public class FlyingNuggetEntity extends ThrownItemEntity {
                             1.5F,
                             2.0F
                     );
-                    //? if v12111plus {
-                    serverWorld.spawnParticles(
+                    //? if >=1.21.11 {
+                    /*serverWorld.spawnParticles(
                             ParticleTypes.EXPLOSION,
                             this.getX(), this.getY(), this.getZ(),
                             1, 0.0, 0.0, 0.0, 0.0
                     );
-                    //?} else {
-                    /*serverWorld.spawnParticles(
+                    *///?} else {
+                    serverWorld.spawnParticles(
                             ParticleTypes.FLASH,
                             this.getX(), this.getY(), this.getZ(),
                             1, 0.0, 0.0, 0.0, 0.0
                     );
-                    *///?}
+                    //?}
                     serverWorld.spawnParticles(
                             ParticleTypes.HAPPY_VILLAGER,
                             this.getX(), this.getY() + 0.1, this.getZ(),
@@ -132,11 +132,11 @@ public class FlyingNuggetEntity extends ThrownItemEntity {
     }
 
     private void triggerCoinHit(PersistentProjectileEntity arrow) {
-        //? if v12111plus {
-        World world = (World) this.getEntityWorld();
-        //?} else {
-        /*World world = (World) this.getWorld();
-        *///?}
+        //? if >=1.21.11 {
+        /*World world = (World) this.getEntityWorld();
+        *///?} else {
+        World world = (World) this.getWorld();
+        //?}
 
         // 1. Check current chain count and perfect timing status from the incoming arrow
         int chainCount = 0;
@@ -185,19 +185,19 @@ public class FlyingNuggetEntity extends ThrownItemEntity {
 
         // Spawn an epic flash particle at the coin position!
         if (world instanceof ServerWorld serverWorld) {
-            //? if v12111plus {
-            serverWorld.spawnParticles(
+            //? if >=1.21.11 {
+            /*serverWorld.spawnParticles(
                     ParticleTypes.EXPLOSION,
                     this.getX(), this.getY(), this.getZ(),
                     1, 0, 0, 0, 0
             );
-            //?} else {
-            /*serverWorld.spawnParticles(
+            *///?} else {
+            serverWorld.spawnParticles(
                     ParticleTypes.FLASH,
                     this.getX(), this.getY(), this.getZ(),
                     1, 0, 0, 0, 0
             );
-            *///?}
+            //?}
             serverWorld.spawnParticles(
                     ParticleTypes.CRIT,
                     this.getX(), this.getY(), this.getZ(),
@@ -274,11 +274,11 @@ public class FlyingNuggetEntity extends ThrownItemEntity {
                     boolean parried = false;
                     if (representative instanceof PlayerEntity victimPlayer && victimPlayer.isBlocking()) {
                         Vec3d lookVec = victimPlayer.getRotationVec(1.0F);
-                        //? if v12111plus {
-                        Vec3d toCoinVec = new Vec3d(this.getX(), this.getY(), this.getZ()).subtract(new Vec3d(victimPlayer.getX(), victimPlayer.getY(), victimPlayer.getZ())).normalize();
-                        //?} else {
-                        /*Vec3d toCoinVec = this.getPos().subtract(victimPlayer.getPos()).normalize();
-                        *///?}
+                        //? if >=1.21.11 {
+                        /*Vec3d toCoinVec = new Vec3d(this.getX(), this.getY(), this.getZ()).subtract(new Vec3d(victimPlayer.getX(), victimPlayer.getY(), victimPlayer.getZ())).normalize();
+                        *///?} else {
+                        Vec3d toCoinVec = this.getPos().subtract(victimPlayer.getPos()).normalize();
+                        //?}
                         if (lookVec.dotProduct(toCoinVec) > 0.0) {
                             parried = true;
 
@@ -288,7 +288,7 @@ public class FlyingNuggetEntity extends ThrownItemEntity {
                                 net.minecraft.entity.EquipmentSlot activeHandSlot = victimPlayer.getActiveHand() == net.minecraft.util.Hand.OFF_HAND ? net.minecraft.entity.EquipmentSlot.OFFHAND : net.minecraft.entity.EquipmentSlot.MAINHAND;
                                 // 1.21.2+: damage() requires ServerWorld + ServerPlayerEntity context
                                 if (world instanceof ServerWorld serverWorld2 && victimPlayer instanceof ServerPlayerEntity serverPlayerVictim) {
-                                    //? if v1214plus {
+                                    //? if >=1.21.4 {
                                     activeItem.damage(10, serverWorld2, serverPlayerVictim, (Item item) -> {});
                                     //?} else {
                                     /*activeItem.damage(10, serverPlayerVictim, activeHandSlot);
@@ -344,7 +344,7 @@ public class FlyingNuggetEntity extends ThrownItemEntity {
 
                     if (!parried) {
                         // Apply instant hitscan damage
-                        //? if v1214plus {
+                        //? if >=1.21.4 {
                         representative.damage((ServerWorld) world, representative.getDamageSources().arrow(null, arrow.getOwner()), (float) damageAmount);
                         //?} else {
                         /*representative.damage(representative.getDamageSources().arrow(null, arrow.getOwner()), (float) damageAmount);
@@ -378,11 +378,11 @@ public class FlyingNuggetEntity extends ThrownItemEntity {
 
                         // Spawn visual splitting beam from coin to target
                         if (world instanceof ServerWorld serverWorld) {
-                            //? if v12111plus {
-                            spawnSplitBeam(serverWorld, new Vec3d(this.getX(), this.getY(), this.getZ()), targetPos);
-                            //?} else {
-                            /*spawnSplitBeam(serverWorld, this.getPos(), targetPos);
-                            *///?}
+                            //? if >=1.21.11 {
+                            /*spawnSplitBeam(serverWorld, new Vec3d(this.getX(), this.getY(), this.getZ()), targetPos);
+                            *///?} else {
+                            spawnSplitBeam(serverWorld, this.getPos(), targetPos);
+                            //?}
 
                             // Post-explosion particles at target position
                             double rx = representative.getX();
@@ -424,11 +424,11 @@ public class FlyingNuggetEntity extends ThrownItemEntity {
                     } else {
                         // Spawn visual splitting beam from coin to target even when parried
                         if (world instanceof ServerWorld serverWorld) {
-                            //? if v12111plus {
-                            spawnSplitBeam(serverWorld, new Vec3d(this.getX(), this.getY(), this.getZ()), targetPos);
-                            //?} else {
-                            /*spawnSplitBeam(serverWorld, this.getPos(), targetPos);
-                            *///?}
+                            //? if >=1.21.11 {
+                            /*spawnSplitBeam(serverWorld, new Vec3d(this.getX(), this.getY(), this.getZ()), targetPos);
+                            *///?} else {
+                            spawnSplitBeam(serverWorld, this.getPos(), targetPos);
+                            //?}
                         }
                     }
 

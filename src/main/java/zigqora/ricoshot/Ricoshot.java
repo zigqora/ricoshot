@@ -26,7 +26,7 @@ public class Ricoshot implements ModInitializer {
 					.dimensions(0.25F, 0.25F)
 					.maxTrackingRange(4)
 					.trackingTickInterval(10)
-					//? if v1214plus {
+					//? if >=1.21.4 {
 					.build(FLYING_NUGGET_KEY));
 					//?} else {
 					/*.build());
@@ -42,7 +42,7 @@ public class Ricoshot implements ModInitializer {
 			net.minecraft.item.ItemStack offHandStack = player.getStackInHand(net.minecraft.util.Hand.OFF_HAND);
 			net.minecraft.item.ItemStack mainHandStack = player.getStackInHand(net.minecraft.util.Hand.MAIN_HAND);
 			if (offHandStack.isOf(net.minecraft.item.Items.GOLD_NUGGET) && mainHandStack.isOf(net.minecraft.item.Items.BOW)) {
-				//? if v1214plus {
+				//? if >=1.21.4 {
 				if (!player.getItemCooldownManager().isCoolingDown(offHandStack)) {
 				//?} else {
 				/*if (!player.getItemCooldownManager().isCoolingDown(offHandStack.getItem())) {
@@ -51,7 +51,7 @@ public class Ricoshot implements ModInitializer {
 						tossNugget(player, world);
 					}
 					// Return success if using the off-hand directly, otherwise pass to allow main-hand actions (like Bow use)
-					//? if v1214plus {
+					//? if >=1.21.4 {
 					return hand == net.minecraft.util.Hand.OFF_HAND ? 
 							net.minecraft.util.ActionResult.SUCCESS : 
 							net.minecraft.util.ActionResult.PASS;
@@ -62,7 +62,7 @@ public class Ricoshot implements ModInitializer {
 					*///?}
 				}
 			}
-			//? if v1214plus {
+			//? if >=1.21.4 {
 			return net.minecraft.util.ActionResult.PASS;
 			//?} else {
 			/*return net.minecraft.util.TypedActionResult.pass(player.getStackInHand(hand));
@@ -102,7 +102,7 @@ public class Ricoshot implements ModInitializer {
 		}
 
 		// Cooldown of 20 ticks (1 second) to prevent spamming
-		//? if v1214plus {
+		//? if >=1.21.4 {
 		player.getItemCooldownManager().set(new net.minecraft.item.ItemStack(net.minecraft.item.Items.GOLD_NUGGET), 20);
 		//?} else {
 		/*player.getItemCooldownManager().set(net.minecraft.item.Items.GOLD_NUGGET, 20);
