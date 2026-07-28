@@ -20,7 +20,7 @@ public class RicoshotConfigScreen extends Screen {
         int centerX = this.width / 2;
         int y = 40;
 
-        // Toggle Action Bar Text
+        // action bar toggle
         this.addDrawableChild(ButtonWidget.builder(
             Text.literal("Popups: " + (RicoshotConfig.instance.enableActionBarText ? "§aON" : "§cOFF")),
             button -> {
@@ -30,7 +30,7 @@ public class RicoshotConfigScreen extends Screen {
             }
         ).dimensions(centerX - 155, y, 150, 20).build());
 
-        // Toggle Explosion Sound
+        // explosion toggle
         this.addDrawableChild(ButtonWidget.builder(
             Text.literal("TNT Sound: " + (RicoshotConfig.instance.playExplosionSound ? "§aON" : "§cOFF")),
             button -> {
@@ -42,7 +42,7 @@ public class RicoshotConfigScreen extends Screen {
 
         y += 30;
 
-        // Targeting Radius Slider (1 to 100 blocks)
+        // radius slider
         double radiusValue = (RicoshotConfig.instance.targetingRadius - 1.0) / 99.0;
         this.addDrawableChild(new SliderWidget(centerX - 155, y, 310, 20, Text.literal(String.format("Coin Targeting Radius: %.1f Blocks", RicoshotConfig.instance.targetingRadius)), radiusValue) {
             @Override
@@ -58,7 +58,7 @@ public class RicoshotConfigScreen extends Screen {
 
         y += 30;
 
-        // Heart Damage Slider (1.0 to 100.0 damage)
+        // damage slider
         double damageValue = (RicoshotConfig.instance.baseDamage - 1.0f) / 99.0f;
         this.addDrawableChild(new SliderWidget(centerX - 155, y, 310, 20, Text.literal(String.format("Base Heart Damage: %.1f HP", RicoshotConfig.instance.baseDamage)), damageValue) {
             @Override

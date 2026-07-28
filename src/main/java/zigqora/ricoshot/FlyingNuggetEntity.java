@@ -38,7 +38,7 @@ public class FlyingNuggetEntity extends ThrownItemEntity {
     public void tick() {
         super.tick();
 
-        // Spawn nice sparkling gold particles on client side!
+        // spawn particles
         if (this.getWorld().isClient()) {
             this.getWorld().addParticle(
                     ParticleTypes.GLOW,
@@ -51,7 +51,7 @@ public class FlyingNuggetEntity extends ThrownItemEntity {
                     0, 0, 0
             );
         } else {
-            // Apex Twinkle Indicator: at tick 14, right before reaching its peak, play a chime and flash!
+            // Shot window
             if (this.age == 14) {
                 this.getWorld().playSound(
                         null,
@@ -59,7 +59,7 @@ public class FlyingNuggetEntity extends ThrownItemEntity {
                         SoundEvents.BLOCK_AMETHYST_BLOCK_CHIME,
                         SoundCategory.PLAYERS,
                         1.5F,
-                        2.0F // maximum high pitch chime!
+                        2.0F // chime sound
                 );
                 if (this.getWorld() instanceof ServerWorld serverWorld) {
                     serverWorld.spawnParticles(
@@ -68,15 +68,15 @@ public class FlyingNuggetEntity extends ThrownItemEntity {
                             1, 0.0, 0.0, 0.0, 0.0
                     );
                     serverWorld.spawnParticles(
-                            ParticleTypes.HAPPY_VILLAGER, // beautiful sparkling emerald/green particles!
+                            ParticleTypes.HAPPY_VILLAGER, //villager particle that used in emerald trading
                             this.getX(), this.getY() + 0.1, this.getZ(),
                             10, 0.1, 0.1, 0.1, 0.1
                     );
                 }
             }
 
-            // Find any projectile entity (arrow, spectral arrow, etc.) close to us
-            Box searchBox = this.getBoundingBox().expand(1.2); // Generous 1.2 block radius for hitbox!
+            // detect projectiles
+            Box searchBox = this.getBoundingBox().expand(1.2); // 1.2 block hitbox
             List<PersistentProjectileEntity> arrows = this.getWorld().getEntitiesByClass(
                     PersistentProjectileEntity.class,
                     searchBox,
@@ -91,7 +91,7 @@ public class FlyingNuggetEntity extends ThrownItemEntity {
                 triggerCoinHit(arrow);
             }
 
-            // Also, if the nugget hits the ground or stays in air too long, discard it
+            // handle expiry
             if (this.age > 100 || this.isOnGround()) {
                 this.discard();
             }
@@ -101,7 +101,7 @@ public class FlyingNuggetEntity extends ThrownItemEntity {
     private void triggerCoinHit(PersistentProjectileEntity arrow) {
         World world = this.getWorld();
 
-        // 1. Check current chain count and perfect timing status from the incoming arrow
+        // check chain status
         int chainCount = 0;
         boolean wasChainPerfect = false;
 
@@ -121,11 +121,10 @@ public class FlyingNuggetEntity extends ThrownItemEntity {
         // Increment the chain bounce count
         chainCount++;
 
-        // Perfect timing window is when the coin is between ticks 13 and 25, or if the chain is already perfect
+        // check timing window
         boolean isPerfectTiming = (this.age >= 13 && this.age <= 25) || wasChainPerfect;
 
-        // Play the ultrakill coin hit sound: a high pitch ding!
-        // Pitch increases with the chain count to sound more and more chaotic and epic!
+        // play hit sound
         float chimePitch = Math.min(2.0F, 1.4F + chainCount * 0.15F);
         world.playSound(
                 null,
@@ -144,7 +143,7 @@ public class FlyingNuggetEntity extends ThrownItemEntity {
                 chimePitch - 0.2F
         );
 
-        // Spawn an epic flash particle at the coin position!
+        // spawn hit flash
         if (world instanceof ServerWorld serverWorld) {
             serverWorld.spawnParticles(
                     ParticleTypes.FLASH,
@@ -158,7 +157,7 @@ public class FlyingNuggetEntity extends ThrownItemEntity {
             );
         }
 
-        // 3. No more other nuggets: redirect the arrow to nearby mob / player targets in shooter's FOV!
+        // redirect to targets
         double range = zigqora.ricoshot.RicoshotConfig.instance.targetingRadius;
         List<LivingEntity> targets = world.getEntitiesByClass(
                 LivingEntity.class,
@@ -167,7 +166,7 @@ public class FlyingNuggetEntity extends ThrownItemEntity {
                     if (!entity.isAlive() || entity == arrow.getOwner()) {
                         return false;
                     }
-                    // Ensure the target has direct line-of-sight to the coin (no shooting through walls or blocks!)
+                    // check los
                     if (!entity.canSee(this)) {
                         return false;
                     }
@@ -175,17 +174,17 @@ public class FlyingNuggetEntity extends ThrownItemEntity {
                         Vec3d lookVec = shooter.getRotationVec(1.0F);
                         Vec3d targetVec = entity.getEyePos().subtract(shooter.getEyePos()).normalize();
                         double dot = lookVec.dotProduct(targetVec);
-                        return dot > 0.5; // Must be within the shooter's ~120 degree FOV cone
+                        return dot > 0.5; // fov check
                     }
                     return true;
                 }
         );
 
         if (!targets.isEmpty()) {
-            // Cluster the mobs into groups based on spatial proximity (distance <= 4.5 blocks)
+            // cluster targets
             List<List<LivingEntity>> groups = clusterMobs(targets, 4.5);
 
-            // Send the ultimate final hit style feed to the shooter player
+            // notify shooter
             if (arrow.getOwner() instanceof PlayerEntity player && RicoshotConfig.instance.enableActionBarText) {
                 if (isPerfectTiming) {
                     player.sendMessage(Text.literal(RicoshotConfig.instance.ultraRicoshotPerfectText), true);
@@ -196,11 +195,11 @@ public class FlyingNuggetEntity extends ThrownItemEntity {
                 }
             }
 
-            // For each group, split one hitscan redirect directed at the representative target of that group
+            // split shot per group
             for (List<LivingEntity> group : groups) {
                 if (group.isEmpty()) continue;
 
-                // Pick the representative (closest target to the coin in the group)
+                // get closest in group
                 LivingEntity representative = null;
                 double nearestDistSq = Double.MAX_VALUE;
                 for (LivingEntity mob : group) {
@@ -212,11 +211,11 @@ public class FlyingNuggetEntity extends ThrownItemEntity {
                 }
 
                 if (representative != null) {
-                    // Calculate damage based on user's configuration
+                    // calc damage
                     // The user requested that we use the slider's configured heart damage directly.
                     double damageToDeal = zigqora.ricoshot.RicoshotConfig.instance.baseDamage;
 
-                    // Perfect timing grants a 50% damage boost instead of a guaranteed instakill
+                    // perfect timing bonus
                     if (isPerfectTiming) {
                         damageToDeal *= 1.5;
                     }
@@ -231,14 +230,14 @@ public class FlyingNuggetEntity extends ThrownItemEntity {
                         if (lookVec.dotProduct(toCoinVec) > 0.0) {
                             parried = true;
 
-                            // 1. Damage shield durability by 10 points
+                            // damage shield
                             net.minecraft.item.ItemStack activeItem = victimPlayer.getActiveItem();
                             if (!activeItem.isEmpty()) {
                                 net.minecraft.entity.EquipmentSlot activeHandSlot = victimPlayer.getActiveHand() == net.minecraft.util.Hand.OFF_HAND ? net.minecraft.entity.EquipmentSlot.OFFHAND : net.minecraft.entity.EquipmentSlot.MAINHAND;
                                 activeItem.damage(10, victimPlayer, activeHandSlot);
                             }
 
-                            // 2. Plays custom audio: shield block + anvil chime
+                            // play parry sound
                             world.playSound(
                                     null,
                                     victimPlayer.getX(), victimPlayer.getY(), victimPlayer.getZ(),
@@ -256,7 +255,7 @@ public class FlyingNuggetEntity extends ThrownItemEntity {
                                     1.8F
                             );
 
-                            // 3. Spawns rich sparks (ParticleTypes.CRIT and ParticleTypes.GLOW)
+                            // spawn parry particles
                             if (world instanceof ServerWorld serverWorld) {
                                 serverWorld.spawnParticles(
                                         ParticleTypes.CRIT,
@@ -270,7 +269,7 @@ public class FlyingNuggetEntity extends ThrownItemEntity {
                                 );
                             }
 
-                             // 4. Send action bar style feedback feeds
+                             // feedback message
                              if (RicoshotConfig.instance.enableActionBarText) {
                                  victimPlayer.sendMessage(Text.literal(RicoshotConfig.instance.shieldParryText), true);
                                  if (arrow.getOwner() instanceof PlayerEntity attackerPlayer) {
@@ -283,10 +282,10 @@ public class FlyingNuggetEntity extends ThrownItemEntity {
                     Vec3d targetPos = representative.getEyePos().subtract(0, 0.2, 0);
 
                     if (!parried) {
-                        // Apply instant hitscan damage
+                        // apply hitscan damage
                         representative.damage(representative.getDamageSources().arrow(null, arrow.getOwner()), (float) damageAmount);
 
-                        // Spawn a purely cosmetic explosion particle!
+                        // cosmetic explosion
                         // (We used to call world.createExplosion here, which dealt massive TNT damage and ruined the math!)
                         if (world instanceof ServerWorld serverWorld) {
                             serverWorld.spawnParticles(
@@ -298,7 +297,7 @@ public class FlyingNuggetEntity extends ThrownItemEntity {
                             );
                         }
 
-                        // Play explosion sound at target location if enabled in config
+                        // target explosion sound
                         if (RicoshotConfig.instance.playExplosionSound && world instanceof ServerWorld serverWorldExplode) {
                             serverWorldExplode.playSound(
                                     null,
@@ -312,7 +311,7 @@ public class FlyingNuggetEntity extends ThrownItemEntity {
                             );
                         }
 
-                        // Spawn visual splitting beam from coin to target
+                        // spawn beam
                         if (world instanceof ServerWorld serverWorld) {
                             spawnSplitBeam(serverWorld, this.getPos(), targetPos);
 
@@ -321,7 +320,7 @@ public class FlyingNuggetEntity extends ThrownItemEntity {
                             double ry = representative.getY();
                             double rz = representative.getZ();
 
-                            // 1. Column rising up (lingering vertical yellow beam)
+                            // vertical beam
                             for (int h = 0; h < 6; h++) {
                                 double height = h * 0.4;
                                 serverWorld.spawnParticles(
@@ -336,7 +335,7 @@ public class FlyingNuggetEntity extends ThrownItemEntity {
                                 );
                             }
 
-                            // 2. Expanding radial shockwave of yellow sparkles
+                            // shockwave
                             for (int i = 0; i < 30; i++) {
                                 double angle = i * (Math.PI * 2 / 30);
                                 double dx = Math.cos(angle) * 1.5;
@@ -354,7 +353,7 @@ public class FlyingNuggetEntity extends ThrownItemEntity {
                             }
                         }
                     } else {
-                        // Spawn visual splitting beam from coin to target even when parried
+                        // spawn beam even when parried
                         if (world instanceof ServerWorld serverWorld) {
                             spawnSplitBeam(serverWorld, this.getPos(), targetPos);
                         }
@@ -442,7 +441,7 @@ public class FlyingNuggetEntity extends ThrownItemEntity {
         for (int i = 0; i <= particleCount; i++) {
             double t = (double) i / particleCount;
             Vec3d point = start.add(diff.multiply(t));
-            // Spawn intense yellow glowing dust and end rod lines
+            // Spawn yellow glowing dust and end rod lines
             world.spawnParticles(
                     ParticleTypes.GLOW,
                     point.x, point.y, point.z,

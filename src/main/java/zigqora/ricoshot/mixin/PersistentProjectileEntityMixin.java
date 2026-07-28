@@ -16,7 +16,7 @@ public class PersistentProjectileEntityMixin {
         if (arrow.getCommandTags().contains("ultrakill_coin_boosted")) {
             World world = arrow.getWorld();
             if (world.isClient()) {
-                // Beautiful dense golden, crit, and light trail particles representing the coin boost!
+                // coin trails
                 for (int i = 0; i < 3; i++) {
                     world.addParticle(
                             net.minecraft.particle.ParticleTypes.CRIT,

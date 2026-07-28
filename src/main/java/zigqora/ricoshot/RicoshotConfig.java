@@ -26,11 +26,11 @@ public class RicoshotConfig {
     public String shieldParryText = "§e§l+ SHIELD PARRY!";
     public String ricoshotBlockedText = "§c§l+ RICOSHOT BLOCKED!";
 
-    // Damage Configuration
+    // damage config
     public float closeDistance = 12.0f;
     public float farDistance = 40.0f;
-    public float closeDamage = 1.0f; // 1.0 = 1x Arrow Damage
-    public float farDamage = 0.5f;   // 0.5 = 0.5x Arrow Damage
+    public float closeDamage = 1.0f; // 1x multiplier
+    public float farDamage = 0.5f;   // 0.5x multiplier
     public static void load() {
         if (CONFIG_FILE.exists()) {
             try (FileReader reader = new FileReader(CONFIG_FILE)) {

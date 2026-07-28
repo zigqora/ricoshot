@@ -28,7 +28,7 @@ public class ProjectileEntityMixin {
             if (arrow.getCommandTags().contains("ultrakill_coin_boosted")) {
                 World world = arrow.getWorld();
                 if (!world.isClient()) {
-                    // Check if we hit a LivingEntity to apply the exact scaled damage
+                    // apply scaled damage
                     if (hitResult instanceof net.minecraft.util.hit.EntityHitResult entityHit) {
                         if (entityHit.getEntity() instanceof net.minecraft.entity.LivingEntity victim) {
                             boolean parried = false;
@@ -38,14 +38,14 @@ public class ProjectileEntityMixin {
                                 if (lookVec.dotProduct(arrowVel) < 0.0) {
                                     parried = true;
 
-                                    // 1. Damage shield durability by 10 points
+                                    // damage shield
                                     net.minecraft.item.ItemStack activeItem = victimPlayer.getActiveItem();
                                     if (!activeItem.isEmpty()) {
                                         EquipmentSlot activeHandSlot = victimPlayer.getActiveHand() == Hand.OFF_HAND ? EquipmentSlot.OFFHAND : EquipmentSlot.MAINHAND;
                                         activeItem.damage(10, victimPlayer, activeHandSlot);
                                     }
 
-                                    // 2. Plays custom audio: shield block + anvil chime
+                                    // play parry sound
                                     world.playSound(
                                             null,
                                             victimPlayer.getX(), victimPlayer.getY(), victimPlayer.getZ(),
@@ -63,7 +63,7 @@ public class ProjectileEntityMixin {
                                             1.8F
                                     );
 
-                                    // 3. Spawns rich sparks (ParticleTypes.CRIT and ParticleTypes.GLOW)
+                                    // spawn parry particles
                                     if (world instanceof ServerWorld serverWorld) {
                                         serverWorld.spawnParticles(
                                                 ParticleTypes.CRIT,
@@ -77,7 +77,7 @@ public class ProjectileEntityMixin {
                                         );
                                     }
 
-                                    // 4. Send action bar style feedback feeds
+                                    // feedback message
                                     if (RicoshotConfig.instance.enableActionBarText) {
                                         victimPlayer.sendMessage(Text.literal(RicoshotConfig.instance.shieldParryText), true);
                                         if (arrow.getOwner() instanceof PlayerEntity attackerPlayer) {
@@ -103,24 +103,24 @@ public class ProjectileEntityMixin {
                                      victim.damage(victim.getDamageSources().arrow(arrow, arrow.getOwner()), (float) customDamage);
                                  }
 
-                                // Trigger explosive effect (1x TNT equivalent) for surrounding collateral damage ONLY ON TARGET HIT!
+                                // explosive damage
                                 world.createExplosion(
                                         arrow,
                                         arrow.getX(),
                                         arrow.getY(),
                                         arrow.getZ(),
-                                        4.0F, // 1x TNT equivalent!
+                                        4.0F, // 1x power
                                         false, // no fire
-                                        World.ExplosionSourceType.NONE // don't destroy blocks to prevent griefing
+                                        World.ExplosionSourceType.NONE // prevent block damage
                                 );
 
-                                // Spawn a lingering yellow trail / beam after the explosion ONLY ON TARGET HIT!
+                                // spawn impact trail
                                 if (world instanceof ServerWorld serverWorld) {
                                     double x = arrow.getX();
                                     double y = arrow.getY();
                                     double z = arrow.getZ();
 
-                                    // 1. Column rising up (lingering vertical yellow beam)
+                                    // vertical beam
                                     for (int h = 0; h < 6; h++) {
                                         double height = h * 0.4;
                                         serverWorld.spawnParticles(
@@ -135,7 +135,7 @@ public class ProjectileEntityMixin {
                                         );
                                     }
 
-                                    // 2. Expanding radial shockwave of yellow sparkles
+                                    // shockwave
                                     for (int i = 0; i < 30; i++) {
                                         double angle = i * (Math.PI * 2 / 30);
                                         double dx = Math.cos(angle) * 1.5;
