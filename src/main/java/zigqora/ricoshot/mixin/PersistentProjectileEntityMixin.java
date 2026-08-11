@@ -1,35 +1,36 @@
 package zigqora.ricoshot.mixin;
 
-import net.minecraft.entity.projectile.PersistentProjectileEntity;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
+import net.minecraft.world.level.Level;
+import net.minecraft.core.particles.ParticleTypes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(PersistentProjectileEntity.class)
+@Mixin(AbstractArrow.class)
 public class PersistentProjectileEntityMixin {
 
     @Inject(method = "tick", at = @At("HEAD"))
     private void tickInject(CallbackInfo ci) {
-        PersistentProjectileEntity arrow = (PersistentProjectileEntity) (Object) this;
-        if (arrow.getCommandTags().contains("ultrakill_coin_boosted")) {
-            World world = arrow.getWorld();
-            if (world.isClient()) {
-                // Beautiful dense golden, crit, and light trail particles representing the coin boost!
+        AbstractArrow arrow = (AbstractArrow) (Object) this;
+        if (arrow.entityTags().contains("ultrakill_coin_boosted")) {
+            Level world = arrow.level();
+            if (world.isClientSide()) {
+                // coin trails
                 for (int i = 0; i < 3; i++) {
                     world.addParticle(
-                            net.minecraft.particle.ParticleTypes.CRIT,
+                            ParticleTypes.CRIT,
                             arrow.getX(), arrow.getY(), arrow.getZ(),
                             0, 0, 0
                     );
                     world.addParticle(
-                            net.minecraft.particle.ParticleTypes.GLOW,
+                            ParticleTypes.GLOW,
                             arrow.getX(), arrow.getY(), arrow.getZ(),
                             0, 0, 0
                     );
                     world.addParticle(
-                            net.minecraft.particle.ParticleTypes.END_ROD,
+                            ParticleTypes.END_ROD,
                             arrow.getX(), arrow.getY(), arrow.getZ(),
                             0, 0, 0
                     );

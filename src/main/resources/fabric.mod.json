@@ -1,38 +1,40 @@
 {
-	"schemaVersion": 1,
-	"id": "ricoshot",
-	"version": "${version}",
-	"name": "Ricoshot",
-	"description": "A Minecraft mod that adds Ultrakill coin tossing and parrying mechanics.",
-	"authors": [
-		"zigqora"
-	],
-	"contact": {
-		"homepage": "https://github.com/zigqora/ricoshot",
-		"sources": "https://github.com/zigqora/ricoshot"
-	},
-	"license": "MIT",
-	"icon": "assets/ricoshot/icon.png",
-	"environment": "*",
-	"entrypoints": {
-		"main": [
-			"zigqora.ricoshot.Ricoshot"
-		],
-		"client": [
-			"zigqora.ricoshot.client.RicoshotClient"
-		]
-	},
-	"mixins": [
-		"ricoshot.mixins.json",
-		{
-			"config": "ricoshot.client.mixins.json",
-			"environment": "client"
-		}
-	],
-	"depends": {
-		"fabricloader": ">=0.19.2",
-		"minecraft": ">=1.21 <1.21.2",
-		"java": ">=21",
-		"fabric-api": "*"
-	}
+  "schemaVersion": 1,
+  "id": "ricoshot",
+  "version": "${version}",
+  "name": "Ricoshot",
+  "description": "A Minecraft mod that adds Ultrakill coin tossing and parrying mechanics.",
+  "authors": [
+    "zigqora"
+  ],
+  "contact": {
+    "homepage": "https://fabricmc.net/",
+    "sources": "https://github.com/FabricMC/fabric-example-mod"
+  },
+  "license": "MIT",
+  "icon": "assets/ricoshot/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "zigqora.ricoshot.Ricoshot"
+    ],
+    "client": [
+      "zigqora.ricoshot.RicoshotClient"
+    ],
+    "modmenu": [
+      "zigqora.ricoshot.gui.RicoshotModMenuApiImpl"
+    ]
+  },
+  "mixins": [
+    "ricoshot.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.16.9",
+    "minecraft": "~26.1",
+    "java": ">=25",
+    "fabric-api": "*"
+  },
+  "suggests": {
+    "another-mod": "*"
+  }
 }
