@@ -1,6 +1,24 @@
 package zigqora.ricoshot;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.player.UseItemCallback;
+
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.Identifier;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -8,72 +26,66 @@ public class Ricoshot implements ModInitializer {
 	public static final String MOD_ID = "ricoshot";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
+	public static final ResourceKey<EntityType<?>> FLYING_NUGGET_KEY = ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "flying_nugget"));
+
 	// Entity registration
-	public static final net.minecraft.entity.EntityType<FlyingNuggetEntity> FLYING_NUGGET_ENTITY_TYPE = net.minecraft.registry.Registry.register(
-			net.minecraft.registry.Registries.ENTITY_TYPE, net.minecraft.util.Identifier.of(MOD_ID, "flying_nugget"),
-			net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder.<FlyingNuggetEntity>create(net.minecraft.entity.SpawnGroup.MISC, FlyingNuggetEntity::new)
-					.dimensions(net.minecraft.entity.EntityDimensions.fixed(0.25f, 0.25f))
-					.trackRangeChunks(4).trackedUpdateRate(10).build());
+	public static final EntityType<FlyingNuggetEntity> FLYING_NUGGET_ENTITY_TYPE = Registry.register(
+			BuiltInRegistries.ENTITY_TYPE, FLYING_NUGGET_KEY,
+			EntityType.Builder.<FlyingNuggetEntity>of(FlyingNuggetEntity::new, MobCategory.MISC)
+					.sized(0.25f, 0.25f)
+					.clientTrackingRange(4).updateInterval(10).build(FLYING_NUGGET_KEY));
 
 	@Override
 	public void onInitialize() {
 		LOGGER.info("Initializing Ricoshot Mod under the MIT License!");
 		RicoshotConfig.load();
 
-		// Ultrakill Coin Toss mechanic: Right click with a Golden Nugget in off-hand tosses it ONLY if main-hand is holding a Bow!
-		net.fabricmc.fabric.api.event.player.UseItemCallback.EVENT.register((player, world, hand) -> {
-			net.minecraft.item.ItemStack offHandStack = player.getStackInHand(net.minecraft.util.Hand.OFF_HAND);
-			net.minecraft.item.ItemStack mainHandStack = player.getStackInHand(net.minecraft.util.Hand.MAIN_HAND);
-			if (offHandStack.isOf(net.minecraft.item.Items.GOLD_NUGGET) && mainHandStack.isOf(net.minecraft.item.Items.BOW)) {
-				if (!player.getItemCooldownManager().isCoolingDown(net.minecraft.item.Items.GOLD_NUGGET)) {
-					if (!world.isClient()) {
+		UseItemCallback.EVENT.register((player, world, hand) -> {
+			ItemStack offHandStack = player.getItemInHand(InteractionHand.OFF_HAND);
+			ItemStack mainHandStack = player.getItemInHand(InteractionHand.MAIN_HAND);
+			if (offHandStack.is(Items.GOLD_NUGGET) && mainHandStack.is(Items.BOW)) {
+				if (!player.getCooldowns().isOnCooldown(player.getItemInHand(hand))) {
+					if (!world.isClientSide()) {
 						tossNugget(player, world);
 					}
-					// Return success if using the off-hand directly, otherwise pass to allow main-hand actions (like Bow use)
-					return hand == net.minecraft.util.Hand.OFF_HAND ? 
-							net.minecraft.util.TypedActionResult.success(player.getStackInHand(hand)) : 
-							net.minecraft.util.TypedActionResult.pass(player.getStackInHand(hand));
+					return hand == InteractionHand.OFF_HAND ? 
+							net.minecraft.world.InteractionResult.SUCCESS : 
+							net.minecraft.world.InteractionResult.PASS;
 				}
 			}
-			return net.minecraft.util.TypedActionResult.pass(player.getStackInHand(hand));
+			return net.minecraft.world.InteractionResult.PASS;
 		});
 	}
 
-	private static void tossNugget(net.minecraft.entity.player.PlayerEntity player, net.minecraft.world.World world) {
+	private static void tossNugget(Player player, Level world) {
 		FlyingNuggetEntity flyingNugget = new FlyingNuggetEntity(world, player);
 		
-		// Set position slightly above player's eyes
-		flyingNugget.setPosition(player.getX(), player.getEyeY() - 0.1, player.getZ());
+		flyingNugget.setPos(player.getX(), player.getEyeY() - 0.1, player.getZ());
 		
-		// Calculate look vector
-		net.minecraft.util.math.Vec3d look = player.getRotationVec(1.0F);
+		Vec3 look = player.getViewVector(1.0F);
 		
-		// Throw forward and upward, combining player velocity for natural motion
-		net.minecraft.util.math.Vec3d velocity = new net.minecraft.util.math.Vec3d(
+		Vec3 velocity = new Vec3(
 				look.x * 0.45,
 				0.55,
 				look.z * 0.45
-		).add(player.getVelocity().multiply(0.8));
+		).add(player.getDeltaMovement().scale(0.8));
 		
-		flyingNugget.setVelocity(velocity);
-		world.spawnEntity(flyingNugget);
+		flyingNugget.setDeltaMovement(velocity);
+		world.addFreshEntity(flyingNugget);
 
-		// Play standard coin toss sound: high pitch chime/ding!
 		world.playSound(
 				null,
 				player.getX(), player.getY(), player.getZ(),
-				net.minecraft.sound.SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP,
-				net.minecraft.sound.SoundCategory.PLAYERS,
+				SoundEvents.EXPERIENCE_ORB_PICKUP,
+				SoundSource.PLAYERS,
 				0.8F,
 				1.6F
 		);
 
-		// Cooldown of 20 ticks (1 second) to prevent spamming
-		player.getItemCooldownManager().set(net.minecraft.item.Items.GOLD_NUGGET, 20);
+		player.getCooldowns().addCooldown(player.getItemInHand(InteractionHand.OFF_HAND), 20);
 
-		// Consume one Golden Nugget from the off-hand stack in survival mode
-		if (!player.getAbilities().creativeMode) {
-			player.getStackInHand(net.minecraft.util.Hand.OFF_HAND).decrement(1);
+		if (!player.getAbilities().instabuild) {
+			player.getItemInHand(InteractionHand.OFF_HAND).shrink(1);
 		}
 	}
 }
