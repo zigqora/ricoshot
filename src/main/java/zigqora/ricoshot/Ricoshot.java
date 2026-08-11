@@ -44,7 +44,8 @@ public class Ricoshot implements ModInitializer {
 			ItemStack offHandStack = player.getItemInHand(InteractionHand.OFF_HAND);
 			ItemStack mainHandStack = player.getItemInHand(InteractionHand.MAIN_HAND);
 			if (offHandStack.is(Items.GOLD_NUGGET) && mainHandStack.is(Items.BOW)) {
-				if (!player.getCooldowns().isOnCooldown(player.getItemInHand(hand))) {
+				if (!player.getCooldowns().isOnCooldown(player.getItemInHand(InteractionHand.OFF_HAND))) {
+					player.getCooldowns().addCooldown(player.getItemInHand(InteractionHand.OFF_HAND), 20);
 					if (!world.isClientSide()) {
 						tossNugget(player, world);
 					}
@@ -81,8 +82,6 @@ public class Ricoshot implements ModInitializer {
 				0.8F,
 				1.6F
 		);
-
-		player.getCooldowns().addCooldown(player.getItemInHand(InteractionHand.OFF_HAND), 20);
 
 		if (!player.getAbilities().instabuild) {
 			player.getItemInHand(InteractionHand.OFF_HAND).shrink(1);
