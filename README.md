@@ -11,7 +11,6 @@ This is a Minecraft mod that adds cool trick shots and parrying. It is inspired 
 
 * **Coin Tossing**: Hold a golden nugget in your left hand (off-hand) and a bow in your right hand. Right-click to throw a coin in the air!
 * **Ricoshot**: If you shoot the flying gold nugget with your bow, the arrow will bounce off it and hit a nearby monster. This deals extra damage and never misses.
-* **Perfect Timing (Ultraricoshot)**: Shoot the coin at the perfect moment (right when you hear the chime and see the sparkle at its peak) to trigger an Ultraricoshot with a special chime and sparkling effect!
 * **Shield Parry**: You can block attacks with a shield to parry. It uses up some of your shield's durability but blocks the hit completely.
 * **Mod Menu Configuration**: Install Mod Menu to customize your experience! You can toggle action bar text pop-ups, adjust the coin's targeting search radius, set the exact heart damage that a standard Ricoshot inflicts, and even toggle the TNT explosion sound effect on or off.
 
